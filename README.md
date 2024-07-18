@@ -7,7 +7,7 @@ http://www.cs.cmu.edu/~seitz/papers/sigg96.pdf
 
 
 ### Clone Source
-```
+```bash
 https://github.com/zongwave/viewmorphing.git
 ```
 
@@ -23,9 +23,10 @@ cd viewmorphing && make
 
 
 ### Run Application
+```bash
+./run_freeview.sh minion_1.jpg minion_2.jpg 8
 ```
-./test-freeview --input input0.jpg --input input1.jpg --input input2.jpg --output output.jpg
-```
+
 #### Usage
         --input          input image(JPEG/PNG/BMP/YUV/NV12)
         --output         output image(JPEG/PNG/BMP/YUV/NV12/MP4)
