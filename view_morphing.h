@@ -21,7 +21,6 @@
 using namespace std;
 using namespace XCam;
 
-#define DEBUG_MORPH 0
 
 typedef struct _XCamMorphInfo {
       uint32_t camera_id;

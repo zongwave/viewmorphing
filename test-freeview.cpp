@@ -126,10 +126,10 @@ static int interpolate_frames (
 static void usage(const char* arg0)
 {
     printf ("Usage:\n"
-            "%s --input input0.yuv --input input1.yuv --input input2.yuv ..."
-            "\t    --output output.yuv ...\n"
-            "\t--input             input image(YUV/NV12)\n"
-            "\t--output            output image(YUV/NV12/MP4)\n"
+            "%s --input input0.jpg --input input1.jpg --input input2.jpg ..."
+            "\t    --output output.jpg ...\n"
+            "\t--input             input image(JPEG/PNG/BMP/YUV/NV12)\n"
+            "\t--output            output image(JPEG/PNG/BMP/YUV/NV12/MP4)\n"
             "\t--save              save output images\n"
             "\t--interp-count      optional, interpolation frame count: 2\n"
             "\t--in-w              optional, input width, default: 1280\n"
@@ -143,14 +143,12 @@ static void usage(const char* arg0)
 
 int main (int argc, char *argv[])
 {
-    std::vector<string> input_files;
     Streams input_streams;
     uint32_t input_width = 1920;
     uint32_t input_height = 1080;
     uint32_t input_format = V4L2_PIX_FMT_YUV420;
     uint32_t output_format = V4L2_PIX_FMT_YUV420;
 
-    std::vector<string> output_files;
     Streams output_streams;
     uint32_t output_width = 1920;
     uint32_t output_height = 1080;
@@ -192,13 +190,11 @@ int main (int argc, char *argv[])
             break;
         case 'i':
             cout << "input file: " << optarg << endl;
-            input_files.push_back (optarg);
             ATTACH_STREAM (Stream, input_streams, optarg);
             break;
         case 'o':
             output_streams.clear();
             cout << "output file: " << optarg << endl;
-            output_files.push_back (optarg);
             ATTACH_STREAM (Stream, output_streams, optarg);
             break;
         case 's':
@@ -226,7 +222,6 @@ int main (int argc, char *argv[])
             output_streams.clear();
             for(int i = 1; i <= interp_count; i++){
                 snprintf(outstr, 64, "%s_%d_%d.yuv", optarg, i, interp_count);
-                output_files.push_back (outstr);
                 ATTACH_STREAM (Stream, output_streams, outstr);
             }
             continuous = true;

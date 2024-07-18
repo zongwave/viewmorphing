@@ -199,8 +199,27 @@ public:
         return _format;
     }
 
-    const char *get_name () const {
-        return _file_name;
+    void split_file_name(const std::string& full_name, std::string& base_name, std::string& extension) const {
+        size_t pos = full_name.find_last_of('.');
+        if (pos != std::string::npos) {
+            base_name = full_name.substr(0, pos);
+            extension = full_name.substr(pos);
+        } else {
+            base_name = full_name;
+            extension = ".jpg"; // Default to .jpg if no extension is found
+        }
+    }
+    const char* get_file_extension() const {
+        static std::string extension;
+        std::string base_name;
+        split_file_name(get_file_name(), base_name, extension);
+        return extension.c_str();
+    }
+    const char* get_base_name() const {
+        static std::string base_name;
+        std::string extension;
+        split_file_name(get_file_name(), base_name, extension);
+        return base_name.c_str();
     }
 
     const SmartPtr<BufferPool> &get_buffer_pool () const {

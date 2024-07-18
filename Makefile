@@ -38,8 +38,14 @@ else
 CXXFLAGS += -DCREATE_MAP_USE_PLAIN_CODE
 endif
 CXXFLAGS += $(INC_PATH)
-CXXFLAGS += -D DEBUG
 
+ifeq ($(DEBUG), 1)
+CXXFLAGS += -DDEBUG
+endif
+
+ifeq ($(DEBUG_MORPH), 1)
+CXXFLAGS += -DDEBUG_MORPH
+endif
 
 #TARGET_LIB := libfreeview.so
 TARGET_EXE := test-freeview

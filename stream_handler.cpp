@@ -159,7 +159,7 @@ Stream::read_frame ()
             return XCAM_RETURN_BYPASS;
         }
     } else {
-        XCAM_LOG_ERROR ("stream(%s) invalid file format: %d", XCAM_STR(get_name ()), (int)_format);
+        XCAM_LOG_ERROR ("stream(%s) invalid file format: %d", XCAM_STR(get_file_name ()), (int)_format);
         return XCAM_RETURN_ERROR_PARAM;
     }
 
@@ -215,11 +215,16 @@ Stream::write_frame (SmartPtr<VideoBuffer> &buf)
         cv::Mat mat;
         convert_to_mat (buf, mat);
         static uint32_t idx = 0;
-        char file_name[20];
-        sprintf (file_name, "%d_%s", idx++, get_name ());
+        char file_name[256];
+
+        std::string base_name = get_base_name ();
+        std::string extension = get_file_extension ();
+        // Format the new file name with the index before the extension
+        sprintf(file_name, "%s_%d%s", base_name.c_str(), idx++, extension.c_str());
+
         cv::imwrite (file_name, mat);
     } else {
-        XCAM_LOG_ERROR ("stream(%s) invalid file format: %d", XCAM_STR(get_name ()), (int)_format);
+        XCAM_LOG_ERROR ("stream(%s) invalid file format: %d", XCAM_STR(get_file_name ()), (int)_format);
         return XCAM_RETURN_ERROR_PARAM;
     }
 
@@ -240,10 +245,10 @@ Stream::write_frame ()
         convert_to_mat (_buf, mat);
         static uint32_t idx = 0;
         char file_name[20];
-        sprintf (file_name, "%d_%s", idx++, get_name ());
+        sprintf (file_name, "%d_%s", idx++, get_file_name ());
         cv::imwrite (file_name, mat);
     } else {
-        XCAM_LOG_ERROR ("stream(%s) invalid file format: %d", XCAM_STR(get_name ()), (int)_format);
+        XCAM_LOG_ERROR ("stream(%s) invalid file format: %d", XCAM_STR(get_file_name ()), (int)_format);
         return XCAM_RETURN_ERROR_PARAM;
     }
 
@@ -266,7 +271,7 @@ Stream::get_free_buf ()
 {
     XCAM_FAIL_RETURN (
         ERROR, _pool.ptr (), NULL,
-        "Stream(%s) get free buffer failed since allocator was not initilized", XCAM_STR(get_name ()));
+        "Stream(%s) get free buffer failed since allocator was not initilized", XCAM_STR(get_file_name ()));
 
     return _pool->get_buffer (_pool);
 }

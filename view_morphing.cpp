@@ -197,7 +197,7 @@ ViewMorphing::cal_fundamental_matrix (std::vector<cv::Point2f> points0, std::vec
         XCAM_LOG_ERROR ("match point0:(%d) match point1(%d) ", match_points0.size (), match_points1.size ());
         return false;
     }
-#if DEBUG_MORPH
+#ifdef DEBUG_MORPH
     vector<cv::Point2f> left_match;
     vector<cv::Point2f> right_match;
     cv::Mat mask;
@@ -249,7 +249,7 @@ ViewMorphing::cal_fundamental_matrix (std::vector<cv::Point2f> points0, std::vec
     cv::drawMatches (_morph_info[0].orig_image, key0, _morph_info[1].orig_image, key1, inlier_matches, out_image);
     cv::imwrite ("images/match_features.jpg", out_image);
 
-/*
+
     vector<cv::Vec3f> lines0;
     cv::computeCorrespondEpilines (match_points0, 1, f_mat, lines0);
     for (int i = 0; i < lines0.size (); i++) {
@@ -267,7 +267,7 @@ ViewMorphing::cal_fundamental_matrix (std::vector<cv::Point2f> points0, std::vec
                  cv::Point (_morph_info[0].orig_image.cols, -(lines1[i][2] + lines1[i][0] * _morph_info[0].orig_image.cols) / lines1[i][1]),
                  cv::Scalar (255, 255, 255));
     }
-*/
+
     cv::imwrite ("images/left_img_epipolar_line.jpg", _morph_info[0].orig_image);
     cv::imwrite ("images/right_img_epipolar_line.jpg", _morph_info[1].orig_image);
 #endif
@@ -386,7 +386,7 @@ ViewMorphing::pre_warp_uncalibrated ()
     cv::warpPerspective (_morph_info[0].orig_image, _morph_info[0].rectify_image, h0, _morph_info[0].rectified_image_size, INTER_LINEAR, BORDER_REPLICATE);
     cv::warpPerspective (_morph_info[1].orig_image, _morph_info[1].rectify_image, h1, _morph_info[1].rectified_image_size, INTER_LINEAR, BORDER_REPLICATE);
 
-#if DEBUG_MORPH
+#ifdef DEBUG_MORPH
     vector<cv::KeyPoint> left_kp;
     vector<cv::KeyPoint> right_kp;
 
@@ -453,7 +453,7 @@ ViewMorphing::morph (float shape_ratio, float color_ratio)
     cv::Mat triangle_map = cv::Mat::zeros (_morph_info[0].rectified_image_size, CV_32SC1);
     paint_triangles (triangle_map, triangle_morph);
 
-#if DEBUG_MORPH
+#ifdef DEBUG_MORPH
     cv::imwrite ("images/paint_triangles.jpg", triangle_map);
 
     //draw_triangles (triangle_map, triangle_morph);
@@ -472,7 +472,7 @@ ViewMorphing::morph (float shape_ratio, float color_ratio)
             create_map (triangle_map, morph_hom[i], trans_map_x, trans_map_y);
             cv::remap (_morph_info[i].rectify_image, trans_image[i], trans_map_x, trans_map_y, cv::INTER_LINEAR);
         }
-#if DEBUG_MORPH
+#ifdef DEBUG_MORPH
     imwrite ("images/left_trans_image.jpg", trans_image[0]);
     imwrite ("images/right_trans_image.jpg", trans_image[1]);
 #endif
@@ -833,7 +833,7 @@ ViewMorphing::post_warp (cv::Mat& out_image)
     cv::warpPerspective (morph_image, morph_image, th_inv, morph_image.size (), INTER_LINEAR, BORDER_REPLICATE);
     cv::Rect rect (0, 0, _morph_info[0].orig_image.cols, _morph_info[0].orig_image.rows);
     out_image = cv::Mat (morph_image, rect);
-#if DEBUG_MORPH
+#ifdef DEBUG_MORPH
     static uint32_t id = 0;
     char name_str[64] = {'\0'};
     std::snprintf (name_str, 64, "images/morph_image_%03d_%03f.jpg", id++, _shape_ratio);
